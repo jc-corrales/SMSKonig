@@ -4,25 +4,25 @@ package source;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Buffer
+public class Buffer <T>
 {
-	private Queue<Object> buffer;
+	private Queue<T> buffer;
 	private int tamanio;
 	private Object lleno, vacio;
 	
 	public Buffer (int tamanio)
 	{
 		this.setTamanio(tamanio);
-		buffer = new LinkedList<Object>();
+		buffer = new LinkedList<T>();
 		setLleno(new Object());
 		setVacio(new Object());
 	}
 	
-	public Queue<Object> getBuffer() {
+	public Queue<T> getBuffer() {
 		return buffer;
 	}
 
-	public void setBuffer(Queue<Object> buffer) {
+	public void setBuffer(Queue<T> buffer) {
 		this.buffer = buffer;
 	}
 
@@ -50,7 +50,7 @@ public class Buffer
 		this.vacio = vacio;
 	}
 	
-	public void almacenar (Integer i)throws ExceptionFullBuffer
+	public void almacenar (T i)throws ExceptionFullBuffer
 	{
 		synchronized (lleno)
 		{
@@ -79,7 +79,7 @@ public class Buffer
 		}
 	}
 	
-	public Integer retirar()throws Exception
+	public T retirar()throws Exception
 	{
 		synchronized (vacio) {
 			while(buffer.size() == 0)
@@ -94,7 +94,7 @@ public class Buffer
 				}
 			}
 		}
-		Integer i;
+		T i;
 		synchronized (this)
 		{
 			if(buffer.peek() != null)
@@ -102,7 +102,7 @@ public class Buffer
 				throw new Exception("Buffer vacio");
 			}
 		}
-		synchronized (this) {i = (Integer)buffer.poll();}
+		synchronized (this) {i = buffer.poll();}
 		synchronized (lleno) {lleno.notify();}
 		return i;
 	}
