@@ -5,15 +5,15 @@ public class Servidor
 {
 	private Consumidor[] consumidores;
 	
-	private Buffer buffer;
+	private Buffer<Mensaje<Integer>> buffer;
 	
-	public Servidor(Integer nConsumidores, Buffer pBuffer)
+	public Servidor(Integer nConsumidores, Buffer<Mensaje<Integer>> pBuffer)
 	{
 		consumidores = new Consumidor[nConsumidores];
 		this.buffer = pBuffer;
 		for(int i = 0; i < consumidores.length; i++)
 		{
-			consumidores[i] = new Consumidor(buffer);
+			consumidores[i] = new Consumidor(buffer, (long) (i+1000));
 		}
 	}
 	
@@ -27,14 +27,21 @@ public class Servidor
 	}
 
 
-	public Buffer getBuffer() {
+	public Buffer<Mensaje<Integer>> getBuffer() {
 		return buffer;
 	}
 
 
-	public void setBuffer(Buffer buffer) {
+	public void setBuffer(Buffer<Mensaje<Integer>> buffer) {
 		this.buffer = buffer;
 	}
 	
+	public void iniciarConsumidores()
+	{
+		for(int i = 0; i < consumidores.length; i++)
+		{
+			consumidores[i].start();
+		}
+	}
 	
 }

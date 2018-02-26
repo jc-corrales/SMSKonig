@@ -26,6 +26,7 @@ public class Productor extends Thread
 	@Override
 	public void run()
 	{
+//		System.out.println("Thread: " + idThread + ", nIteraciones" + nIteraciones);
 		Random random = new Random();
 		for(int i = 0; i < nIteraciones; i++)
 		{
@@ -36,20 +37,22 @@ public class Productor extends Thread
 			while(!exito)
 			{
 				try {
+					System.out.println("Thread " + idThread + " almacenando, intento: " + iteracionActual);
 					buffer.almacenar(mensaje);
-					mensaje.wait();
 					exito = true;
+					iteracionActual++;
 				} catch (ExceptionFullBuffer e) {
 					Thread.yield();
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
+//				catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
-		
+		System.out.println("Termino Thread: " + idThread);
 	}
 
 

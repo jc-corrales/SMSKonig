@@ -8,14 +8,14 @@ public class Buffer <T>
 {
 	private Queue<T> buffer;
 	private int tamanio;
-	private Object lleno, vacio;
+//	private Object lleno, vacio;
 	
 	public Buffer (int tamanio)
 	{
 		this.setTamanio(tamanio);
 		buffer = new LinkedList<T>();
-		setLleno(new Object());
-		setVacio(new Object());
+//		setLleno(new Object());
+//		setVacio(new Object());
 	}
 	
 	public Queue<T> getBuffer() {
@@ -34,28 +34,28 @@ public class Buffer <T>
 		this.tamanio = tamanio;
 	}
 
-	public Object getLleno() {
-		return lleno;
-	}
-
-	public void setLleno(Object lleno) {
-		this.lleno = lleno;
-	}
-
-	public Object getVacio() {
-		return vacio;
-	}
-
-	public void setVacio(Object vacio) {
-		this.vacio = vacio;
-	}
+//	public Object getLleno() {
+//		return lleno;
+//	}
+//
+//	public void setLleno(Object lleno) {
+//		this.lleno = lleno;
+//	}
+//
+//	public Object getVacio() {
+//		return vacio;
+//	}
+//
+//	public void setVacio(Object vacio) {
+//		this.vacio = vacio;
+//	}
 	
 	public void almacenar (T i)throws ExceptionFullBuffer
 	{
-		synchronized (lleno)
-		{
-			if(buffer.size() == tamanio)
-			{
+//		synchronized (lleno)
+//		{
+//			if(buffer.size() == tamanio)
+//			{
 //				Espera Pasiva
 //				try
 //				{
@@ -66,34 +66,46 @@ public class Buffer <T>
 //					
 //				}
 //				Espera Activa
-				throw new ExceptionFullBuffer("Buffer Lleno.");
-			}
-		}
+////				throw new ExceptionFullBuffer("Buffer Lleno.");
+//			}
+//		}
 		synchronized (this) 
 		{
 			buffer.add(i);
-		}
-		synchronized (vacio) 
-		{
-			vacio.notify();
-		}
-	}
-	
-	public T retirar()throws Exception
-	{
-		synchronized (vacio) {
-			while(buffer.size() == 0)
-			{
+			synchronized (i) {
 				try
 				{
-					vacio.wait();
+					i.wait();
 				}
 				catch(InterruptedException e)
 				{
 					;
 				}
+				
 			}
+			
 		}
+//		synchronized (vacio) 
+//		{
+//			vacio.notify();
+//		}
+	}
+	
+	public T retirar()throws Exception
+	{
+//		synchronized (vacio) {
+//			while(buffer.size() == 0)
+//			{
+//				try
+//				{
+//					vacio.wait();
+//				}
+//				catch(InterruptedException e)
+//				{
+//					;
+//				}
+//			}
+//		}
 		T i;
 		synchronized (this)
 		{
@@ -103,7 +115,7 @@ public class Buffer <T>
 			}
 		}
 		synchronized (this) {i = buffer.poll();}
-		synchronized (lleno) {lleno.notify();}
+//		synchronized (lleno) {lleno.notify();}
 		return i;
 	}
 }
