@@ -86,7 +86,7 @@ public class Buffer <T>
 		{
 			if(buffer.peek() == null)
 			{
-				throw new Exception("Buffer vacio");
+				throw new ExceptionEmptyBuffer("Buffer vacio");
 			}
 			i = buffer.poll();
 		}
@@ -103,12 +103,13 @@ public class Buffer <T>
 	public void retirarThreadActivo(Long idThread)
 	{
 		synchronized (identificadoresThreadsClientesActivos) {
-			for(int i = 0; i < identificadoresThreadsClientesActivos.size(); i++) {
-				if(identificadoresThreadsClientesActivos.get(i).equals(idThread))
-				{
-					identificadoresThreadsClientesActivos.remove(i);
-				}
-			}
+			identificadoresThreadsClientesActivos.remove(idThread);
+//			for(int i = 0; i < identificadoresThreadsClientesActivos.size(); i++) {
+//				if(identificadoresThreadsClientesActivos.get(i).equals(idThread))
+//				{
+//					identificadoresThreadsClientesActivos.remove(i);
+//				}
+//			}
 		}
 	}
 	
