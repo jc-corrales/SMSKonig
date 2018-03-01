@@ -20,6 +20,7 @@ public class Productor extends Thread
 		this.buffer = buffer;
 		this.setnIteraciones(nIteraciones);
 		this.iteracionActual = 0;
+		buffer.registrarNuevoThreadActivo(idThread);
 	}
 	
 	
@@ -52,6 +53,7 @@ public class Productor extends Thread
 //				}
 			}
 		}
+		buffer.retirarThreadActivo(idThread);
 		System.out.println("Termino Thread: " + idThread);
 	}
 

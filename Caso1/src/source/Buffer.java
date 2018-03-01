@@ -1,5 +1,6 @@
 package source;
 
+import java.util.ArrayList;
 //import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -8,12 +9,14 @@ public class Buffer <T>
 {
 	private Queue<T> buffer;
 	private int tamanio;
+	private ArrayList<Long> identificadoresThreadsClientesActivos;
 //	private Object lleno, vacio;
 	
 	public Buffer (int tamanio)
 	{
 		this.setTamanio(tamanio);
 		buffer = new LinkedList<T>();
+		identificadoresThreadsClientesActivos = new ArrayList<Long>();
 //		setLleno(new Object());
 //		setVacio(new Object());
 	}
@@ -50,6 +53,14 @@ public class Buffer <T>
 //		this.vacio = vacio;
 //	}
 	
+	public ArrayList<Long> getIdentificadoresThreadsClientesActivos() {
+		return identificadoresThreadsClientesActivos;
+	}
+
+	public void setIdentificadoresThreadsClientesActivos(ArrayList<Long> identificadoresThreadsClientesActivos) {
+		this.identificadoresThreadsClientesActivos = identificadoresThreadsClientesActivos;
+	}
+
 	public void almacenar (T i)throws ExceptionFullBuffer
 	{
 //		synchronized (lleno)
@@ -93,6 +104,7 @@ public class Buffer <T>
 	
 	public T retirar()throws Exception
 	{
+		System.out.println("Threads activos: " + identificadoresThreadsClientesActivos.size());
 //		synchronized (vacio) {
 //			while(buffer.size() == 0)
 //			{
@@ -117,5 +129,27 @@ public class Buffer <T>
 		synchronized (this) {i = buffer.poll();}
 //		synchronized (lleno) {lleno.notify();}
 		return i;
+	}
+	
+	public void registrarNuevoThreadActivo(Long idThread)
+	{
+		identificadoresThreadsClientesActivos.add(idThread);
+	}
+	
+	public void retirarThreadActivo(Long idThread)
+	{
+		identificadoresThreadsClientesActivos.remove(idThread);
+	}
+	
+	public Boolean evaluarEstadoThreadsClientesActivos()
+	{
+		if(identificadoresThreadsClientesActivos.size() > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

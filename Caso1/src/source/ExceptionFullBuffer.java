@@ -3,6 +3,11 @@ package source;
 public class ExceptionFullBuffer extends Exception
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ExceptionFullBuffer() {
 		super();
 		// TODO Auto-generated constructor stub

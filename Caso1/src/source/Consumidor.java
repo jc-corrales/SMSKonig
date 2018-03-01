@@ -14,7 +14,7 @@ public class Consumidor extends Thread
 	
 	private Long time;
 	
-	public Consumidor(Buffer buffer, Long idThread)
+	public Consumidor(Buffer<Mensaje<Integer>> buffer, Long idThread)
 	{
 		this.buffer = buffer;
 		this.iteracionActual = 0;
@@ -26,9 +26,8 @@ public class Consumidor extends Thread
 	@Override
 	public void run()
 	{
-		time = System.currentTimeMillis();
-		boolean timeout = false;
-		while(!timeout)
+//		time = System.currentTimeMillis();
+		while(buffer.evaluarEstadoThreadsClientesActivos())
 		{
 			try
 			{
@@ -38,24 +37,20 @@ public class Consumidor extends Thread
 				synchronized (mensaje) {
 					mensaje.notify();
 				}
-				time = System.currentTimeMillis();
+//				time = System.currentTimeMillis();
 			}
 			catch(Exception e)
 			{
-				Long now = System.currentTimeMillis();
-				if(now > (time+TIMEOUT))
-				{
-					timeout = true;
-				}
+//				Long now = System.currentTimeMillis();
+//				if(now > (time+TIMEOUT))
+//				{
+//					timeout = true;
+//				}
 //				System.out.println(e.getMessage());
 			}
 		}
 		System.out.println("Termino Thread: " + idThread);
 	}
-
-
-
-
 	public Long getIdThread() {
 		return idThread;
 	}
@@ -66,14 +61,14 @@ public class Consumidor extends Thread
 	}
 
 
-	public Buffer getBuffer() {
+	public Buffer<Mensaje<Integer>> getBuffer() {
 		return buffer;
 	}
 
 
 
 
-	public void setBuffer(Buffer buffer) {
+	public void setBuffer(Buffer<Mensaje<Integer>> buffer) {
 		this.buffer = buffer;
 	}
 
