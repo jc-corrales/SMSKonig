@@ -80,22 +80,25 @@ public class Buffer <T>
 ////				throw new ExceptionFullBuffer("Buffer Lleno.");
 //			}
 //		}
-		synchronized (this) 
+//		System.out.println("Tamanio Buffer Pre Synchronized: " + buffer.size());
+		synchronized (buffer) 
 		{
 			buffer.add(i);
-			synchronized (i) {
-				try
-				{
-					i.wait();
-				}
-				catch(InterruptedException e)
-				{
-					;
-				}
-				
-			}
-			
+//			System.out.println("Tamanio Buffer Post buffer.add(i): " + buffer.size());
 		}
+		synchronized (i) {
+			try
+			{
+				System.out.println("pre wait.");
+				i.wait();
+				System.out.println("post wait.");
+			}
+			catch(InterruptedException e)
+			{
+				;
+			}
+		}
+//		System.out.println("Tamanio Buffer Post synchronized: " + buffer.size());
 //		synchronized (vacio) 
 //		{
 //			vacio.notify();
@@ -104,7 +107,7 @@ public class Buffer <T>
 	
 	public T retirar()throws Exception
 	{
-		System.out.println("Threads activos: " + identificadoresThreadsClientesActivos.size());
+//		System.out.println("Threads activos: " + identificadoresThreadsClientesActivos.size());
 //		synchronized (vacio) {
 //			while(buffer.size() == 0)
 //			{
@@ -119,26 +122,30 @@ public class Buffer <T>
 //			}
 //		}
 		T i;
-		synchronized (this)
+		synchronized (buffer)
 		{
 			if(buffer.peek() != null)
 			{
 				throw new Exception("Buffer vacio");
 			}
+			i = buffer.poll();
 		}
-		synchronized (this) {i = buffer.poll();}
 //		synchronized (lleno) {lleno.notify();}
 		return i;
 	}
 	
 	public void registrarNuevoThreadActivo(Long idThread)
 	{
-		identificadoresThreadsClientesActivos.add(idThread);
+		synchronized (identificadoresThreadsClientesActivos) {
+			identificadoresThreadsClientesActivos.add(idThread);
+		}
 	}
 	
 	public void retirarThreadActivo(Long idThread)
 	{
-		identificadoresThreadsClientesActivos.remove(idThread);
+		synchronized (identificadoresThreadsClientesActivos) {
+			identificadoresThreadsClientesActivos.remove(idThread);
+		}
 	}
 	
 	public Boolean evaluarEstadoThreadsClientesActivos()

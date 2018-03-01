@@ -31,8 +31,9 @@ public class Consumidor extends Thread
 		{
 			try
 			{
-				System.out.println("Thread " + idThread + " obteniendo.");
+//				System.out.println("Thread " + idThread + " obteniendo.");
 				Mensaje<Integer> mensaje = buffer.retirar();
+//				System.out.println("Thread " + idThread + " modificando mensaje: " + mensaje.getTitulo());
 				mensaje.setContenido(mensaje.getContenido() + 1);
 				synchronized (mensaje) {
 					mensaje.notify();
