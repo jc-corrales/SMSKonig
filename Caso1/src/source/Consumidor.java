@@ -26,12 +26,12 @@ public class Consumidor extends Thread
 	@Override
 	public void run()
 	{
-//		time = System.currentTimeMillis();
 		while(buffer.evaluarEstadoThreadsClientesActivos())
 		{
 			try
 			{
-//				System.out.println("Thread " + idThread + " obteniendo.");
+//				System.out.println(buffer.evaluarEstadoThreadsClientesActivos());
+				System.out.println("Thread " + idThread + " obteniendo.");
 				Mensaje<Integer> mensaje = buffer.retirar();
 //				System.out.println("Thread " + idThread + " modificando mensaje: " + mensaje.getTitulo());
 				mensaje.setContenido(mensaje.getContenido() + 1);
@@ -42,14 +42,9 @@ public class Consumidor extends Thread
 			}
 			catch(Exception e)
 			{
-//				Long now = System.currentTimeMillis();
-//				if(now > (time+TIMEOUT))
-//				{
-//					timeout = true;
-//				}
-//				System.out.println(e.getMessage());
 			}
 		}
+//		System.out.println("threadsActivosSize: " + buffer.getIdentificadoresThreadsClientesActivos().size());
 		System.out.println("Termino Thread: " + idThread);
 	}
 	public Long getIdThread() {

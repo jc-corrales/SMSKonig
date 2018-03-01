@@ -7,18 +7,27 @@ import java.util.Queue;
 
 public class Buffer <T>
 {
+	/**
+	 * Buffer en el que se almacenan los mensajes.
+	 */
 	private Queue<T> buffer;
+	/**
+	 * Tamaño definido del Buffer.
+	 */
 	private int tamanio;
+	/**
+	 * ArrayList que contiene los IDs de los Threads Clientes activos.
+	 */
 	private ArrayList<Long> identificadoresThreadsClientesActivos;
-//	private Object lleno, vacio;
-	
+	/**
+	 * Método constructor de la clase.
+	 * @param tamanio int, Tamaño del buffer a establecer.
+	 */
 	public Buffer (int tamanio)
 	{
 		this.setTamanio(tamanio);
 		buffer = new LinkedList<T>();
 		identificadoresThreadsClientesActivos = new ArrayList<Long>();
-//		setLleno(new Object());
-//		setVacio(new Object());
 	}
 	
 	public Queue<T> getBuffer() {
@@ -36,22 +45,6 @@ public class Buffer <T>
 	public void setTamanio(int tamanio) {
 		this.tamanio = tamanio;
 	}
-
-//	public Object getLleno() {
-//		return lleno;
-//	}
-//
-//	public void setLleno(Object lleno) {
-//		this.lleno = lleno;
-//	}
-//
-//	public Object getVacio() {
-//		return vacio;
-//	}
-//
-//	public void setVacio(Object vacio) {
-//		this.vacio = vacio;
-//	}
 	
 	public ArrayList<Long> getIdentificadoresThreadsClientesActivos() {
 		return identificadoresThreadsClientesActivos;
@@ -63,26 +56,12 @@ public class Buffer <T>
 
 	public void almacenar (T i)throws ExceptionFullBuffer
 	{
-//		synchronized (lleno)
-//		{
-//			if(buffer.size() == tamanio)
-//			{
-//				Espera Pasiva
-//				try
-//				{
-//					lleno.wait();
-//				}
-//				catch(InterruptedException e)
-//				{
-//					
-//				}
-//				Espera Activa
-////				throw new ExceptionFullBuffer("Buffer Lleno.");
-//			}
-//		}
-//		System.out.println("Tamanio Buffer Pre Synchronized: " + buffer.size());
 		synchronized (buffer) 
 		{
+			if(buffer.size() == tamanio)
+			{
+				throw new ExceptionFullBuffer("Buffer LLeno");
+			}
 			buffer.add(i);
 //			System.out.println("Tamanio Buffer Post buffer.add(i): " + buffer.size());
 		}
@@ -98,39 +77,19 @@ public class Buffer <T>
 				;
 			}
 		}
-//		System.out.println("Tamanio Buffer Post synchronized: " + buffer.size());
-//		synchronized (vacio) 
-//		{
-//			vacio.notify();
-//		}
 	}
 	
 	public T retirar()throws Exception
 	{
-//		System.out.println("Threads activos: " + identificadoresThreadsClientesActivos.size());
-//		synchronized (vacio) {
-//			while(buffer.size() == 0)
-//			{
-//				try
-//				{
-//					vacio.wait();
-//				}
-//				catch(InterruptedException e)
-//				{
-//					;
-//				}
-//			}
-//		}
 		T i;
 		synchronized (buffer)
 		{
-			if(buffer.peek() != null)
+			if(buffer.peek() == null)
 			{
 				throw new Exception("Buffer vacio");
 			}
 			i = buffer.poll();
 		}
-//		synchronized (lleno) {lleno.notify();}
 		return i;
 	}
 	
@@ -144,19 +103,27 @@ public class Buffer <T>
 	public void retirarThreadActivo(Long idThread)
 	{
 		synchronized (identificadoresThreadsClientesActivos) {
-			identificadoresThreadsClientesActivos.remove(idThread);
+			for(int i = 0; i < identificadoresThreadsClientesActivos.size(); i++) {
+				if(identificadoresThreadsClientesActivos.get(i).equals(idThread))
+				{
+					identificadoresThreadsClientesActivos.remove(i);
+				}
+			}
 		}
 	}
 	
 	public Boolean evaluarEstadoThreadsClientesActivos()
 	{
-		if(identificadoresThreadsClientesActivos.size() > 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
+		synchronized (identificadoresThreadsClientesActivos) {
+			if(identificadoresThreadsClientesActivos.size() > 0)
+			{
+				return true;
+			}
+			else
+			{
+				System.out.println("Ejecutó false");
+				return false;
+			}
 		}
 	}
 }

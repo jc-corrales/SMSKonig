@@ -43,14 +43,11 @@ public class Productor extends Thread
 					exito = true;
 					iteracionActual++;
 				} catch (ExceptionFullBuffer e) {
+					System.out.println("Thread: " + idThread + ", " + e.getMessage());
 					Thread.yield();
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
-//				catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
-//				}
+				} 
 			}
 		}
 		buffer.retirarThreadActivo(idThread);
